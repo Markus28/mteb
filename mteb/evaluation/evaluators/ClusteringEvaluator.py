@@ -25,7 +25,7 @@ class ClusteringEvaluator(Evaluator):
         logger.info(f"Encoding {len(self.sentences)} sentences...")
         corpus_embeddings = np.asarray(model.encode(self.sentences, batch_size=self.batch_size))
 
-        logger.info("Fitting Mini-Batch K-Means model...")
+        logger.info(f"Fitting {self.clustering_algorithm} model...")
         K = len(set(self.labels))
         if self.clustering_algorithm == 'k-means':
             clustering_model = sklearn.cluster.MiniBatchKMeans(
