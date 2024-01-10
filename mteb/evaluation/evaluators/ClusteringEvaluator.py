@@ -10,7 +10,7 @@ from .Evaluator import Evaluator
 
 
 class ClusteringEvaluator(Evaluator):
-    def __init__(self, sentences, labels, clustering_batch_size=500, batch_size=32, limit=None, **kwargs):
+    def __init__(self, sentences, labels, clustering_batch_size=500, batch_size=32, limit=None, clustering_algorithm='k-means', **kwargs):
         super().__init__(**kwargs)
         if limit is not None:
             sentences = sentences[:limit]
@@ -19,15 +19,29 @@ class ClusteringEvaluator(Evaluator):
         self.labels = labels
         self.clustering_batch_size = clustering_batch_size
         self.batch_size = batch_size
+        self.clustering_algorithm = clustering_algorithm
 
     def __call__(self, model):
         logger.info(f"Encoding {len(self.sentences)} sentences...")
         corpus_embeddings = np.asarray(model.encode(self.sentences, batch_size=self.batch_size))
 
         logger.info("Fitting Mini-Batch K-Means model...")
-        clustering_model = sklearn.cluster.MiniBatchKMeans(
-            n_clusters=len(set(self.labels)), batch_size=self.clustering_batch_size, n_init="auto"
-        )
+        K = len(set(self.labels))
+        if self.clustering_algorithm == 'k-means':
+            clustering_model = sklearn.cluster.MiniBatchKMeans(
+                n_clusters=K, batch_size=self.clustering_batch_size, n_init="auto"
+            )
+        elif self.clustering_algorithm == 'spherical-k-means':
+            from spherecluster import SphericalKMeans
+            clustering_model = SphericalKMeans(n_clusters=K)
+        elif self.clustering_algorithm == 'vMF-mixture-soft':
+            from spherecluster import VonMisesFisherMixture
+            clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='soft')
+        elif self.clustering_algorithm == 'vMF-mixture-hard':
+            from spherecluster import VonMisesFisherMixture
+            clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='hard')
+        else:
+            raise NotImplementedError
         clustering_model.fit(corpus_embeddings)
         cluster_assignment = clustering_model.labels_
 

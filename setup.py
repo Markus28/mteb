@@ -47,6 +47,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme_file:
 
 extras = {}
 extras["beir"] = ["beir"]
+extras["sphere_cluster"] = ["spherecluster"]
 
 
 setup(
