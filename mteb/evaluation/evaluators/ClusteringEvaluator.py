@@ -48,7 +48,7 @@ class ClusteringEvaluator(Evaluator):
 
         if self.clustering_algorithm != 'k-means':
             assert corpus_embeddings.ndim == 2
-            corpus_embeddings = corpus_embeddings / np.linalg.norm(corpus_embeddings, axis=-1)
+            corpus_embeddings = corpus_embeddings / np.linalg.norm(corpus_embeddings, axis=-1, keepdims=True)
 
         clustering_model.fit(corpus_embeddings)
         cluster_assignment = clustering_model.labels_
