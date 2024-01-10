@@ -31,24 +31,10 @@ class ClusteringEvaluator(Evaluator):
             clustering_model = sklearn.cluster.MiniBatchKMeans(
                 n_clusters=K, batch_size=self.clustering_batch_size, n_init="auto"
             )
-        elif self.clustering_algorithm == 'spherical-k-means':
-            from spherecluster import SphericalKMeans
-            clustering_model = SphericalKMeans(n_clusters=K)
-        elif self.clustering_algorithm == 'soyclustering':
-            from soyclustering import SphericalKMeans
-            clustering_model = SphericalKMeans(n_clusters=K)
-        elif self.clustering_algorithm == 'vMF-mixture-soft':
-            from spherecluster import VonMisesFisherMixture
-            clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='soft')
-        elif self.clustering_algorithm == 'vMF-mixture-hard':
-            from spherecluster import VonMisesFisherMixture
-            clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='hard')
+        elif self.clustering_algorithm == 'agglomerative':
+            clustering_model = sklearn.cluster.AgglomerativeClustering(n_clusters=K, affinity='cosine')
         else:
             raise NotImplementedError
-
-        if self.clustering_algorithm != 'k-means':
-            assert corpus_embeddings.ndim == 2
-            corpus_embeddings = corpus_embeddings / np.linalg.norm(corpus_embeddings, axis=-1, keepdims=True)
 
         clustering_model.fit(corpus_embeddings)
         cluster_assignment = clustering_model.labels_
