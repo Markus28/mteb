@@ -34,6 +34,9 @@ class ClusteringEvaluator(Evaluator):
         elif self.clustering_algorithm == 'spherical-k-means':
             from spherecluster import SphericalKMeans
             clustering_model = SphericalKMeans(n_clusters=K)
+        elif self.clustering_algorithm == 'soyclustering':
+            from soyclustering import SphericalKMeans
+            clustering_model = SphericalKMeans(n_clusters=K)
         elif self.clustering_algorithm == 'vMF-mixture-soft':
             from spherecluster import VonMisesFisherMixture
             clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='soft')
