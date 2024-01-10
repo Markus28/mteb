@@ -32,7 +32,7 @@ class ClusteringEvaluator(Evaluator):
                 n_clusters=K, batch_size=self.clustering_batch_size, n_init="auto"
             )
         elif self.clustering_algorithm == 'agglomerative':
-            clustering_model = sklearn.cluster.AgglomerativeClustering(n_clusters=K, affinity='cosine')
+            clustering_model = sklearn.cluster.AgglomerativeClustering(n_clusters=K, affinity='cosine', linkage='average')
         else:
             raise NotImplementedError
 
