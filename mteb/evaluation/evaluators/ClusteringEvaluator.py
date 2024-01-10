@@ -42,6 +42,11 @@ class ClusteringEvaluator(Evaluator):
             clustering_model = VonMisesFisherMixture(n_clusters=K, posterior_type='hard')
         else:
             raise NotImplementedError
+
+        if self.clustering_algorithm != 'k-means':
+            assert corpus_embeddings.ndim == 2
+            corpus_embeddings = corpus_embeddings / np.linalg.norm(corpus_embeddings, axis=-1)
+
         clustering_model.fit(corpus_embeddings)
         cluster_assignment = clustering_model.labels_
 
